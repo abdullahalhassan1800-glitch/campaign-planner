@@ -36,9 +36,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             if not api_key:
                 self.send_json({"error": "API key not configured"}, 400)
                 return
+            base_url = self.headers.get("X-Base-Url", "").strip()
+            api_url = base_url.rstrip('/') + '/chat/completions' if base_url else NVIDIA_API
             try:
                 req = urllib.request.Request(
-                    NVIDIA_API,
+                    api_url,
                     data=body,
                     headers={
                         "Content-Type": "application/json",
@@ -64,7 +66,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def send_cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Api-Key")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Api-Key, X-Base-Url")
         self.send_header("Access-Control-Max-Age", "86400")
 
     def send_json(self, obj, status=200):

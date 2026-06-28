@@ -7,24 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #18181f;
-  --surface3: #1f1f28;
-  --border: #2a2a35;
-  --border2: #3a3a48;
-  --accent: #4f6ef7;
-  --accent2: #7c3aed;
-  --accent-glow: rgba(79,110,247,0.15);
-  --green: #22c55e;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --text: #e8e8f0;
-  --text2: #9898b0;
-  --text3: #5a5a70;
+  --bg: #f8f9fa;
+  --surface: #ffffff;
+  --surface2: #f1f3f4;
+  --surface3: #e8eaed;
+  --border: #dadce0;
+  --border2: #c4c7c5;
+  --accent: #1a73e8;
+  --accent2: #0d652d;
+  --accent-glow: rgba(26,115,232,0.1);
+  --green: #188038;
+  --amber: #ea8600;
+  --red: #d93025;
+  --text: #202124;
+  --text2: #5f6368;
+  --text3: #80868b;
   --mono: 'DM Mono', monospace;
   --display: 'Syne', sans-serif;
   --body: 'DM Sans', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,26 +40,24 @@ body {
   overflow-x: hidden;
 }
 
-/* BG grid */
+/* Subtle dot pattern */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(79,110,247,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79,110,247,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: radial-gradient(rgba(26,115,232,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
 }
 
-.app { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+.app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
 
 /* Header */
-.header { text-align: center; margin-bottom: 48px; }
+.header { text-align: center; margin-bottom: 40px; }
 .header-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--accent-glow); border: 1px solid rgba(79,110,247,0.3);
+  background: #e8f0fe; border: 1px solid rgba(26,115,232,0.25);
   border-radius: 20px; padding: 4px 14px;
   font-family: var(--mono); font-size: 11px; color: var(--accent);
   margin-bottom: 16px; letter-spacing: 0.05em;
@@ -67,10 +67,10 @@ body::before {
 
 h1 {
   font-family: var(--display);
-  font-size: clamp(28px, 5vw, 42px);
+  font-size: clamp(32px, 5vw, 44px);
   font-weight: 800;
-  line-height: 1.1;
-  background: linear-gradient(135deg, #e8e8f0 0%, #9898b0 100%);
+  line-height: 1.15;
+  background: linear-gradient(135deg, #202124 0%, #5f6368 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -78,36 +78,49 @@ h1 {
 }
 .header p { color: var(--text2); font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.6; }
 
+/* Footer */
+.footer {
+  margin-top: 48px; padding: 20px 0; text-align: center;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 11px; color: var(--text3);
+}
+
 /* API key section */
 .api-section {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
   padding: 20px;
   margin-bottom: 24px;
-  display: flex; align-items: center; gap: 12px;
 }
 .api-section label { font-family: var(--mono); font-size: 11px; color: var(--text3); white-space: nowrap; }
 .api-input {
   flex: 1; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 12px;
   font-family: var(--mono); font-size: 12px; color: var(--text);
-  outline: none; transition: border-color 0.2s;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.api-input:focus { border-color: var(--accent); }
+.api-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .api-input::placeholder { color: var(--text3); }
+.api-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.api-row label { font-family: var(--mono); font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 80px; }
+.api-row .api-input { flex: 1; min-width: 180px; }
+.api-link { font-family: var(--mono); font-size: 11px; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.api-link:hover { text-decoration: underline; }
 .api-badge {
   font-family: var(--mono); font-size: 10px; padding: 3px 8px;
   border-radius: 6px; white-space: nowrap;
 }
-.api-badge.ok { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-.api-badge.err { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+.api-badge.ok { background: #e6f4ea; color: var(--green); border: 1px solid rgba(24,128,56,0.3); }
+.api-badge.err { background: #fce8e6; color: var(--red); border: 1px solid rgba(217,48,37,0.3); }
 
 /* Form card */
 .form-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
   padding: 28px;
   margin-bottom: 24px;
 }
@@ -122,9 +135,9 @@ h1 {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background: var(--surface2);
+  background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px 14px;
   color: var(--text);
   font-family: var(--body);
@@ -140,18 +153,18 @@ h1 {
 }
 .form-group input::placeholder,
 .form-group textarea::placeholder { color: var(--text3); }
-.form-group select option { background: var(--surface2); }
+.form-group select option { background: var(--surface); }
 .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 
 /* Tabs */
-.tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: 12px; padding: 4px; margin-bottom: 28px; }
+.tabs { display: flex; gap: 2px; background: var(--surface2); border-radius: 10px; padding: 3px; margin-bottom: 24px; }
 .tab {
-  flex: 1; padding: 8px 12px; border: none; border-radius: 9px;
+  flex: 1; padding: 8px 14px; border: none; border-radius: 8px;
   background: transparent; color: var(--text2);
-  font-family: var(--body); font-size: 13px; cursor: pointer;
+  font-family: var(--body); font-size: 13px; font-weight: 500; cursor: pointer;
   transition: all 0.2s;
 }
-.tab.active { background: var(--surface3); color: var(--text); border: 1px solid var(--border2); }
+.tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
 .tab:hover:not(.active) { color: var(--text); }
 
 /* Section label */
@@ -161,65 +174,66 @@ h1 {
 }
 
 /* Checkboxes for output sections */
-.output-toggles { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.output-toggles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .toggle-chip {
   display: flex; align-items: center; gap: 6px;
-  background: var(--surface2); border: 1px solid var(--border);
+  background: var(--bg); border: 1px solid var(--border);
   border-radius: 8px; padding: 6px 12px; cursor: pointer;
   transition: all 0.2s; user-select: none;
   font-size: 13px; color: var(--text2);
 }
 .toggle-chip input { display: none; }
 .toggle-chip.checked {
-  background: var(--accent-glow); border-color: rgba(79,110,247,0.5);
-  color: var(--text);
+  background: #e8f0fe; border-color: var(--accent);
+  color: var(--accent);
 }
 .toggle-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background 0.2s; }
 .toggle-chip.checked .dot { background: var(--accent); }
 
 /* Generate button */
 .generate-btn {
-  width: 100%; padding: 16px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border: none; border-radius: 12px;
-  color: #fff; font-family: var(--display); font-size: 16px; font-weight: 700;
+  width: 100%; padding: 14px;
+  background: var(--accent);
+  border: none; border-radius: 10px;
+  color: #fff; font-family: var(--body); font-size: 15px; font-weight: 600;
   cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
-.generate-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(79,110,247,0.4); }
+.generate-btn:hover { background: #1557b0; box-shadow: 0 4px 16px rgba(26,115,232,0.35); }
 .generate-btn:active { transform: translateY(0); }
 .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .generate-btn .btn-inner { display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-/* Loading */
-.loader { display: none; text-align: center; padding: 40px; }
+/* Progress bar loader */
+.loader { display: none; padding: 32px 0; }
 .loader.visible { display: block; }
-.loader-dots { display: inline-flex; gap: 6px; margin-bottom: 16px; }
-.loader-dots span {
-  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
-  animation: bounce 1.2s infinite;
+.loader-bar {
+  width: 100%; height: 4px; background: var(--surface3); border-radius: 4px; overflow: hidden; margin-bottom: 16px;
 }
-.loader-dots span:nth-child(2) { animation-delay: 0.2s; }
-.loader-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
-.loader p { color: var(--text2); font-family: var(--mono); font-size: 12px; }
+.loader-bar-fill {
+  height: 100%; width: 0%; background: var(--accent); border-radius: 4px;
+  animation: progress 12s ease-in-out forwards;
+}
+@keyframes progress { 0%{width:0%} 30%{width:35%} 60%{width:65%} 100%{width:95%} }
+.loader p { color: var(--text2); font-family: var(--mono); font-size: 12px; text-align: center; }
 
 /* Output sections */
 .output { display: none; }
-.output.visible { display: block; animation: fadeIn 0.4s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.output.visible { display: block; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
 .output-section {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 12px;
   margin-bottom: 16px;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 .output-section-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 20px; border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+  background: var(--bg);
 }
 .output-section-title {
   display: flex; align-items: center; gap: 8px;
@@ -229,60 +243,61 @@ h1 {
   width: 26px; height: 26px; border-radius: 6px;
   display: flex; align-items: center; justify-content: center; font-size: 13px;
 }
-.si-blue { background: rgba(79,110,247,0.2); }
-.si-green { background: rgba(34,197,94,0.2); }
-.si-amber { background: rgba(245,158,11,0.2); }
-.si-purple { background: rgba(124,58,237,0.2); }
+.si-blue { background: #e8f0fe; }
+.si-green { background: #e6f4ea; }
+.si-amber { background: #fef7e0; }
+.si-purple { background: #f3e8fd; }
 
 .copy-btn {
-  background: var(--surface3); border: 1px solid var(--border2);
+  background: transparent; border: 1px solid var(--border);
   border-radius: 6px; padding: 4px 10px;
   font-family: var(--mono); font-size: 10px; color: var(--text2);
   cursor: pointer; transition: all 0.2s;
 }
-.copy-btn:hover { color: var(--text); border-color: var(--accent); }
-.copy-btn.copied { color: var(--green); border-color: rgba(34,197,94,0.4); }
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); background: #e8f0fe; }
+.copy-btn.copied { color: var(--green); border-color: var(--green); background: #e6f4ea; }
 
 .output-body { padding: 20px; }
 
 /* Keyword table */
 .kw-table { width: 100%; border-collapse: collapse; }
 .kw-table th {
-  text-align: left; padding: 8px 10px;
+  text-align: left; padding: 10px 12px;
   font-family: var(--mono); font-size: 10px; color: var(--text3);
   letter-spacing: 0.08em; text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border);
 }
-.kw-table td { padding: 9px 10px; border-bottom: 1px solid rgba(42,42,53,0.5); font-size: 13px; }
+.kw-table td { padding: 10px 12px; border-bottom: 1px solid var(--surface3); font-size: 13px; }
 .kw-table tr:last-child td { border-bottom: none; }
 .kw-table tr:hover td { background: var(--surface2); }
 .kw-mono { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .badge {
   display: inline-block; font-family: var(--mono); font-size: 10px;
-  padding: 2px 7px; border-radius: 4px;
+  padding: 2px 8px; border-radius: 4px;
 }
-.b-exact { background: rgba(79,110,247,0.15); color: #7c9fff; border: 1px solid rgba(79,110,247,0.3); }
-.b-phrase { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-.b-broad { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-.b-neg { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-.b-p1 { background: rgba(239,68,68,0.1); color: #f87171; }
-.b-p2 { background: rgba(245,158,11,0.1); color: #fbbf24; }
-.b-p3 { background: rgba(79,110,247,0.1); color: #7c9fff; }
+.b-exact { background: #e8f0fe; color: var(--accent); border: 1px solid rgba(26,115,232,0.3); }
+.b-phrase { background: #e6f4ea; color: var(--green); border: 1px solid rgba(24,128,56,0.3); }
+.b-broad { background: #fef7e0; color: var(--amber); border: 1px solid rgba(234,134,0,0.3); }
+.b-neg { background: #fce8e6; color: var(--red); border: 1px solid rgba(217,48,37,0.3); }
+.b-p1 { background: #fce8e6; color: var(--red); }
+.b-p2 { background: #fef7e0; color: var(--amber); }
+.b-p3 { background: #e8f0fe; color: var(--accent); }
 
 /* Campaign cards */
 .camp-card {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 12px; overflow: hidden;
 }
 .camp-card-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 16px; border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 .camp-card-title { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text); }
 .budget-tag {
   font-family: var(--mono); font-size: 11px; padding: 3px 10px;
-  border-radius: 20px; background: rgba(79,110,247,0.15);
-  color: var(--accent); border: 1px solid rgba(79,110,247,0.3);
+  border-radius: 20px; background: #e8f0fe;
+  color: var(--accent); border: 1px solid rgba(26,115,232,0.25);
 }
 .camp-card-body { padding: 14px 16px; }
 .ag-item { margin-bottom: 12px; }
@@ -291,21 +306,21 @@ h1 {
 .kw-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .kw-chip {
   font-family: var(--mono); font-size: 11px;
-  background: var(--surface3); border: 1px solid var(--border2);
-  border-radius: 4px; padding: 2px 8px; color: var(--text2);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 3px 8px; color: var(--text2);
 }
 
 /* Ad copy cards */
 .ad-preview {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 12px; padding: 16px; margin-bottom: 12px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; margin-bottom: 12px;
 }
 .ad-preview-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 8px; letter-spacing: 0.08em; }
 .ad-url { font-size: 12px; color: var(--green); margin-bottom: 4px; }
-.ad-headline { font-size: 15px; color: #7c9fff; line-height: 1.4; margin-bottom: 6px; font-weight: 500; }
 .ad-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
 .ad-headlines-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.hl-item { display: flex; align-items: center; gap: 8px; }
+.hl-item { display: flex; align-items: center; gap: 8px; padding: 3px 6px; border-radius: 4px; }
+.hl-item:hover { background: var(--surface2); }
 .hl-num { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 20px; }
 .hl-text { font-size: 13px; color: var(--text); }
 .hl-len { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-left: auto; }
@@ -314,29 +329,29 @@ h1 {
 
 /* Extensions */
 .ext-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.ext-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.ext-item { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
 .ext-type { font-family: var(--mono); font-size: 10px; color: var(--accent); margin-bottom: 6px; letter-spacing: 0.06em; }
 .ext-vals { display: flex; flex-direction: column; gap: 3px; }
 .ext-val { font-size: 12px; color: var(--text2); }
 
 /* Budget table */
 .budget-table { width: 100%; border-collapse: collapse; }
-.budget-table th { text-align: left; padding: 8px 12px; font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-.budget-table td { padding: 10px 12px; border-bottom: 1px solid rgba(42,42,53,0.4); font-size: 13px; }
-.budget-table tr:last-child td { border-bottom: none; font-weight: 500; color: var(--accent); }
+.budget-table th { text-align: left; padding: 10px 12px; font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+.budget-table td { padding: 10px 12px; border-bottom: 1px solid var(--surface3); font-size: 13px; }
+.budget-table tr:last-child td { border-bottom: none; font-weight: 600; color: var(--accent); }
 .budget-table tr:hover td { background: var(--surface2); }
 
 /* Settings list */
 .settings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.setting-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; }
+.setting-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
 .s-key { font-family: var(--mono); font-size: 11px; color: var(--text3); }
 .s-val { font-size: 12px; color: var(--text); text-align: right; }
 
 /* Error */
 .error-box {
-  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-  border-radius: 12px; padding: 16px; margin-bottom: 16px;
-  font-family: var(--mono); font-size: 12px; color: #f87171;
+  background: #fce8e6; border: 1px solid rgba(217,48,37,0.3);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;
+  font-family: var(--mono); font-size: 12px; color: var(--red);
   display: none;
 }
 .error-box.visible { display: block; }
@@ -344,28 +359,42 @@ h1 {
 /* Regenerate */
 .regen-bar {
   display: none; align-items: center; justify-content: space-between;
-  padding: 12px 20px; background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px;
+  padding: 12px 20px; background: #e6f4ea;
+  border: 1px solid rgba(24,128,56,0.2); border-radius: 10px; margin-bottom: 16px;
 }
 .regen-bar.visible { display: flex; }
-.regen-bar span { font-size: 13px; color: var(--text2); }
+.regen-bar span { font-size: 13px; color: var(--green); font-weight: 500; }
 .regen-btn {
-  background: var(--surface3); border: 1px solid var(--border2);
+  background: var(--surface); border: 1px solid var(--border);
   border-radius: 8px; padding: 6px 16px;
   font-family: var(--body); font-size: 13px; color: var(--text);
   cursor: pointer; transition: all 0.2s;
 }
-.regen-btn:hover { border-color: var(--accent); color: var(--accent); }
+.regen-btn:hover { border-color: var(--accent); color: var(--accent); background: #e8f0fe; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
-@media (max-width: 600px) {
+/* Summary banner */
+.summary-banner {
+  background: linear-gradient(135deg, #e8f0fe, #f3e8fd);
+  border: 1px solid rgba(26,115,232,0.2);
+  border-radius: 12px; padding: 20px; margin-bottom: 16px;
+}
+.summary-metric {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 14px;
+}
+
+@media (max-width: 640px) {
   .form-grid { grid-template-columns: 1fr; }
   .ext-grid { grid-template-columns: 1fr; }
   .settings-list { grid-template-columns: 1fr; }
+  .app { padding: 24px 16px 60px; }
 }
 </style>
 </head>
@@ -376,38 +405,38 @@ h1 {
   <div class="header">
     <div class="header-badge">AI-POWERED · GOOGLE ADS PLANNER</div>
     <h1>Campaign Architect</h1>
-    <p>Business details daalo — AI real campaign structure, keywords, aur ad copy generate karega</p>
+    <p>Enter your business details — AI will generate a complete Google Ads campaign with keywords, ad copy, and more</p>
   </div>
 
   <!-- API Config -->
-  <div class="api-section" style="flex-direction:column;gap:10px;">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">BASE URL</label>
-      <input type="text" class="api-input" id="apiBaseUrl" value="https://integrate.api.nvidia.com/v1" placeholder="https://integrate.api.nvidia.com/v1" style="flex:1;min-width:200px;">
+  <div class="api-section">
+    <div class="api-row">
+      <label>BASE URL</label>
+      <input type="text" class="api-input" id="apiBaseUrl" value="https://integrate.api.nvidia.com/v1" placeholder="https://integrate.api.nvidia.com/v1">
     </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">API KEY</label>
-      <input type="password" class="api-input" id="apiKey" placeholder="nvapi-... (NVIDIA Build free API key)" oninput="checkKey()" style="flex:1;min-width:200px;">
+    <div class="api-row">
+      <label>API KEY</label>
+      <input type="password" class="api-input" id="apiKey" placeholder="nvapi-... (NVIDIA Build free API key)" oninput="checkKey()">
       <span class="api-badge" id="keyBadge" style="display:none"></span>
-      <a href="https://build.nvidia.com/signup" target="_blank" style="font-family:var(--mono);font-size:11px;color:var(--accent);text-decoration:none;white-space:nowrap;">Get Free Key ↗</a>
+      <a href="https://build.nvidia.com/signup" target="_blank" class="api-link">Get Free Key ↗</a>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">MODEL</label>
-      <select class="api-input" id="modelSelect" onchange="toggleCustomModel()" style="flex:1;min-width:200px;">
-        <optgroup label="🏆 Top Recommended">
-          <option value="nvidia/nemotron-3-ultra-550b-a55b" selected>Nemotron-3-Ultra-550B ⭐</option>
+    <div class="api-row">
+      <label>MODEL</label>
+      <select class="api-input" id="modelSelect" onchange="toggleCustomModel()">
+        <optgroup label="Top Recommended">
+          <option value="nvidia/nemotron-3-ultra-550b-a55b" selected>Nemotron-3-Ultra-550B</option>
           <option value="deepseek-ai/deepseek-v4-pro">DeepSeek V4 Pro (1.6T)</option>
           <option value="z-ai/glm-5.1">GLM-5.1 (754B)</option>
           <option value="moonshotai/kimi-k2.6">Kimi-K2.6 (1T)</option>
         </optgroup>
-        <optgroup label="⚡ Fast & Mid-Size">
+        <optgroup label="Fast & Mid-Size">
           <option value="deepseek-ai/deepseek-v4-flash">DeepSeek V4 Flash (284B)</option>
           <option value="stepfun-ai/step-3.7-flash">Step 3.7 Flash (198B)</option>
           <option value="nvidia/nemotron-3-super-120b-a12b">Nemotron-3-Super-120B</option>
           <option value="nvidia/llama-3.3-nemotron-super-49b-v1.5">Nemotron-Super-49B v1.5</option>
           <option value="mistralai/mistral-small-4-119b-2603">Mistral Small 4 (119B)</option>
         </optgroup>
-        <optgroup label="💪 Reliable">
+        <optgroup label="Reliable">
           <option value="meta/llama-3.3-70b-instruct">Llama 3.3 70B</option>
           <option value="meta/llama-4-maverick-17b-128e-instruct">Llama 4 Maverick 17B</option>
           <option value="google/gemma-4-31b-it">Gemma 4 31B</option>
@@ -415,7 +444,7 @@ h1 {
           <option value="mistralai/mixtral-8x7b-instruct-v0.1">Mixtral 8x7B</option>
           <option value="minimax/minimax-m2.7">MiniMax M2.7 (230B)</option>
         </optgroup>
-        <optgroup label="🔬 Experimental / Small">
+        <optgroup label="Experimental / Small">
           <option value="nvidia/nemotron-3-nano-30b-a3b">Nemotron-3-Nano-30B</option>
           <option value="nvidia/gpt-oss-120b">GPT-OSS-120B</option>
           <option value="nvidia/diffusiongemma-26b-a4b-it">DiffusionGemma 26B</option>
@@ -426,7 +455,7 @@ h1 {
           <option value="custom">Custom model ID...</option>
         </optgroup>
       </select>
-      <input type="text" class="api-input" id="customModel" placeholder="e.g. mistralai/mixtral-8x7b" style="display:none;flex:1;min-width:200px;">
+      <input type="text" class="api-input" id="customModel" placeholder="e.g. mistralai/mixtral-8x7b" style="display:none">
     </div>
   </div>
 
@@ -523,34 +552,34 @@ h1 {
     <div id="tab-output" style="display:none">
       <div class="section-label">Select sections to generate</div>
       <div class="output-toggles" id="outputToggles">
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="keywords" checked>
           <span class="dot"></span> Keyword Research
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="campaign_structure" checked>
           <span class="dot"></span> Campaign Structure
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="ad_copy" checked>
           <span class="dot"></span> RSA Ad Copy
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="extensions" checked>
           <span class="dot"></span> Ad Extensions
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="negatives" checked>
           <span class="dot"></span> Negative Keywords
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="budget" checked>
           <span class="dot"></span> Budget Allocation
-        </label>
-        <label class="toggle-chip checked" onclick="toggleChip(this)">
+        </div>
+        <div class="toggle-chip checked" onclick="toggleChip(this)">
           <input type="checkbox" value="settings" checked>
           <span class="dot"></span> Campaign Settings
-        </label>
+        </div>
       </div>
     </div>
 
@@ -569,7 +598,7 @@ h1 {
 
   <!-- Loader -->
   <div class="loader" id="loader">
-    <div class="loader-dots"><span></span><span></span><span></span></div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
     <p id="loaderMsg">Analysing business & generating campaign...</p>
   </div>
 
@@ -581,6 +610,9 @@ h1 {
 
   <!-- Output -->
   <div class="output" id="output"></div>
+
+  <!-- Footer -->
+  <div class="footer">Campaign Architect · AI-Powered Google Ads Planner · NVIDIA Build API</div>
 
 </div>
 
@@ -652,7 +684,7 @@ function stopLoader() { clearInterval(loaderInterval); }
 
 async function generate() {
   const apiKey = document.getElementById('apiKey').value.trim();
-  const baseUrl = (document.getElementById('apiBaseUrl').value.trim() || 'https://openrouter.ai/api/v1').replace(/\/$/, '');
+  const baseUrl = (document.getElementById('apiBaseUrl').value.trim() || 'https://integrate.api.nvidia.com/v1').replace(/\/$/, '');
   const model = getModel();
   if (!apiKey) { showError('Pehle API key daalo. NVIDIA Build se free key lo: build.nvidia.com/signup'); return; }
   if (!model) { showError('Model select ya enter karo.'); return; }
@@ -730,7 +762,8 @@ Be specific, actionable, and tailored to this exact business. Generate at least 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Api-Key': apiKey
+        'X-Api-Key': apiKey,
+        'X-Base-Url': baseUrl
       },
       body: JSON.stringify({
         model: model,
@@ -780,15 +813,15 @@ function renderOutput(plan, outputs, biz, tgt) {
   // Summary banner
   if (plan.summary) {
     out.innerHTML += `
-    <div style="background:linear-gradient(135deg,rgba(79,110,247,0.1),rgba(124,58,237,0.1));border:1px solid rgba(79,110,247,0.3);border-radius:16px;padding:20px;margin-bottom:16px;">
+    <div class="summary-banner">
       <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;margin-bottom:8px;">CAMPAIGN OVERVIEW</div>
-      <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">${plan.summary.business || biz.name}</div>
+      <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;">${plan.summary.business || biz.name}</div>
       <div style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:14px;">${plan.summary.strategy || ''}</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">DAILY BUDGET</div><div style="font-size:16px;font-weight:600;color:var(--accent)">AED ${plan.summary.total_budget_aed || tgt.budget}</div></div>
-        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">CAMPAIGNS</div><div style="font-size:16px;font-weight:600;color:var(--text)">${plan.summary.campaigns_count || (plan.campaign_structure||[]).length}</div></div>
-        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">TARGET CPL</div><div style="font-size:16px;font-weight:600;color:var(--green)">${plan.summary.estimated_cpl || 'AED '+tgt.cpl}</div></div>
-        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">GOAL</div><div style="font-size:16px;font-weight:600;color:var(--text)">${tgt.goal}</div></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="summary-metric"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">DAILY BUDGET</div><div style="font-size:16px;font-weight:600;color:var(--accent)">AED ${plan.summary.total_budget_aed || tgt.budget}</div></div>
+        <div class="summary-metric"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">CAMPAIGNS</div><div style="font-size:16px;font-weight:600;color:var(--text)">${plan.summary.campaigns_count || (plan.campaign_structure||[]).length}</div></div>
+        <div class="summary-metric"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">TARGET CPL</div><div style="font-size:16px;font-weight:600;color:var(--green)">${plan.summary.estimated_cpl || 'AED '+tgt.cpl}</div></div>
+        <div class="summary-metric"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">GOAL</div><div style="font-size:16px;font-weight:600;color:var(--text)">${tgt.goal}</div></div>
       </div>
     </div>`;
   }
