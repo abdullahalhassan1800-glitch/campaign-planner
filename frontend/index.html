@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Ads Campaign Planner — AI Powered</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --surface3: #1f1f28;
+  --border: #2a2a35;
+  --border2: #3a3a48;
+  --accent: #4f6ef7;
+  --accent2: #7c3aed;
+  --accent-glow: rgba(79,110,247,0.15);
+  --green: #22c55e;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --text: #e8e8f0;
+  --text2: #9898b0;
+  --text3: #5a5a70;
+  --mono: 'DM Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --body: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BG grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(79,110,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,110,247,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* Header */
+.header { text-align: center; margin-bottom: 48px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-glow); border: 1px solid rgba(79,110,247,0.3);
+  border-radius: 20px; padding: 4px 14px;
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  margin-bottom: 16px; letter-spacing: 0.05em;
+}
+.header-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #e8e8f0 0%, #9898b0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+.header p { color: var(--text2); font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+/* API key section */
+.api-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.api-section label { font-family: var(--mono); font-size: 11px; color: var(--text3); white-space: nowrap; }
+.api-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px;
+  font-family: var(--mono); font-size: 12px; color: var(--text);
+  outline: none; transition: border-color 0.2s;
+}
+.api-input:focus { border-color: var(--accent); }
+.api-input::placeholder { color: var(--text3); }
+.api-badge {
+  font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+  border-radius: 6px; white-space: nowrap;
+}
+.api-badge.ok { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+.api-badge.err { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+/* Form card */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label {
+  font-family: var(--mono); font-size: 11px; color: var(--text3);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text3); }
+.form-group select option { background: var(--surface2); }
+.form-group textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: 12px; padding: 4px; margin-bottom: 28px; }
+.tab {
+  flex: 1; padding: 8px 12px; border: none; border-radius: 9px;
+  background: transparent; color: var(--text2);
+  font-family: var(--body); font-size: 13px; cursor: pointer;
+  transition: all 0.2s;
+}
+.tab.active { background: var(--surface3); color: var(--text); border: 1px solid var(--border2); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* Section label */
+.section-label {
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+}
+
+/* Checkboxes for output sections */
+.output-toggles { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.toggle-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  transition: all 0.2s; user-select: none;
+  font-size: 13px; color: var(--text2);
+}
+.toggle-chip input { display: none; }
+.toggle-chip.checked {
+  background: var(--accent-glow); border-color: rgba(79,110,247,0.5);
+  color: var(--text);
+}
+.toggle-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background 0.2s; }
+.toggle-chip.checked .dot { background: var(--accent); }
+
+/* Generate button */
+.generate-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; border-radius: 12px;
+  color: #fff; font-family: var(--display); font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+  letter-spacing: 0.02em;
+}
+.generate-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(79,110,247,0.4); }
+.generate-btn:active { transform: translateY(0); }
+.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.generate-btn .btn-inner { display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* Loading */
+.loader { display: none; text-align: center; padding: 40px; }
+.loader.visible { display: block; }
+.loader-dots { display: inline-flex; gap: 6px; margin-bottom: 16px; }
+.loader-dots span {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  animation: bounce 1.2s infinite;
+}
+.loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+.loader p { color: var(--text2); font-family: var(--mono); font-size: 12px; }
+
+/* Output sections */
+.output { display: none; }
+.output.visible { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.output-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.output-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.output-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text);
+}
+.section-icon {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.si-blue { background: rgba(79,110,247,0.2); }
+.si-green { background: rgba(34,197,94,0.2); }
+.si-amber { background: rgba(245,158,11,0.2); }
+.si-purple { background: rgba(124,58,237,0.2); }
+
+.copy-btn {
+  background: var(--surface3); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 4px 10px;
+  font-family: var(--mono); font-size: 10px; color: var(--text2);
+  cursor: pointer; transition: all 0.2s;
+}
+.copy-btn:hover { color: var(--text); border-color: var(--accent); }
+.copy-btn.copied { color: var(--green); border-color: rgba(34,197,94,0.4); }
+
+.output-body { padding: 20px; }
+
+/* Keyword table */
+.kw-table { width: 100%; border-collapse: collapse; }
+.kw-table th {
+  text-align: left; padding: 8px 10px;
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.kw-table td { padding: 9px 10px; border-bottom: 1px solid rgba(42,42,53,0.5); font-size: 13px; }
+.kw-table tr:last-child td { border-bottom: none; }
+.kw-table tr:hover td { background: var(--surface2); }
+.kw-mono { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.badge {
+  display: inline-block; font-family: var(--mono); font-size: 10px;
+  padding: 2px 7px; border-radius: 4px;
+}
+.b-exact { background: rgba(79,110,247,0.15); color: #7c9fff; border: 1px solid rgba(79,110,247,0.3); }
+.b-phrase { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.b-broad { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.b-neg { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.b-p1 { background: rgba(239,68,68,0.1); color: #f87171; }
+.b-p2 { background: rgba(245,158,11,0.1); color: #fbbf24; }
+.b-p3 { background: rgba(79,110,247,0.1); color: #7c9fff; }
+
+/* Campaign cards */
+.camp-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+}
+.camp-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+}
+.camp-card-title { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text); }
+.budget-tag {
+  font-family: var(--mono); font-size: 11px; padding: 3px 10px;
+  border-radius: 20px; background: rgba(79,110,247,0.15);
+  color: var(--accent); border: 1px solid rgba(79,110,247,0.3);
+}
+.camp-card-body { padding: 14px 16px; }
+.ag-item { margin-bottom: 12px; }
+.ag-item:last-child { margin-bottom: 0; }
+.ag-name { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.05em; }
+.kw-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.kw-chip {
+  font-family: var(--mono); font-size: 11px;
+  background: var(--surface3); border: 1px solid var(--border2);
+  border-radius: 4px; padding: 2px 8px; color: var(--text2);
+}
+
+/* Ad copy cards */
+.ad-preview {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin-bottom: 12px;
+}
+.ad-preview-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 8px; letter-spacing: 0.08em; }
+.ad-url { font-size: 12px; color: var(--green); margin-bottom: 4px; }
+.ad-headline { font-size: 15px; color: #7c9fff; line-height: 1.4; margin-bottom: 6px; font-weight: 500; }
+.ad-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.ad-headlines-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.hl-item { display: flex; align-items: center; gap: 8px; }
+.hl-num { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 20px; }
+.hl-text { font-size: 13px; color: var(--text); }
+.hl-len { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-left: auto; }
+.hl-len.warn { color: var(--amber); }
+.hl-len.ok { color: var(--green); }
+
+/* Extensions */
+.ext-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ext-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.ext-type { font-family: var(--mono); font-size: 10px; color: var(--accent); margin-bottom: 6px; letter-spacing: 0.06em; }
+.ext-vals { display: flex; flex-direction: column; gap: 3px; }
+.ext-val { font-size: 12px; color: var(--text2); }
+
+/* Budget table */
+.budget-table { width: 100%; border-collapse: collapse; }
+.budget-table th { text-align: left; padding: 8px 12px; font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.budget-table td { padding: 10px 12px; border-bottom: 1px solid rgba(42,42,53,0.4); font-size: 13px; }
+.budget-table tr:last-child td { border-bottom: none; font-weight: 500; color: var(--accent); }
+.budget-table tr:hover td { background: var(--surface2); }
+
+/* Settings list */
+.settings-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.setting-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; }
+.s-key { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.s-val { font-size: 12px; color: var(--text); text-align: right; }
+
+/* Error */
+.error-box {
+  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 12px; padding: 16px; margin-bottom: 16px;
+  font-family: var(--mono); font-size: 12px; color: #f87171;
+  display: none;
+}
+.error-box.visible { display: block; }
+
+/* Regenerate */
+.regen-bar {
+  display: none; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px;
+}
+.regen-bar.visible { display: flex; }
+.regen-bar span { font-size: 13px; color: var(--text2); }
+.regen-btn {
+  background: var(--surface3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 6px 16px;
+  font-family: var(--body); font-size: 13px; color: var(--text);
+  cursor: pointer; transition: all 0.2s;
+}
+.regen-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .ext-grid { grid-template-columns: 1fr; }
+  .settings-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">AI-POWERED · GOOGLE ADS PLANNER</div>
+    <h1>Campaign Architect</h1>
+    <p>Business details daalo — AI real campaign structure, keywords, aur ad copy generate karega</p>
+  </div>
+
+  <!-- API Config -->
+  <div class="api-section" style="flex-direction:column;gap:10px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">BASE URL</label>
+      <input type="text" class="api-input" id="apiBaseUrl" value="https://integrate.api.nvidia.com/v1" placeholder="https://integrate.api.nvidia.com/v1" style="flex:1;min-width:200px;">
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">API KEY</label>
+      <input type="password" class="api-input" id="apiKey" placeholder="nvapi-... (NVIDIA Build free API key)" oninput="checkKey()" style="flex:1;min-width:200px;">
+      <span class="api-badge" id="keyBadge" style="display:none"></span>
+      <a href="https://build.nvidia.com/signup" target="_blank" style="font-family:var(--mono);font-size:11px;color:var(--accent);text-decoration:none;white-space:nowrap;">Get Free Key ↗</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;min-width:84px;">MODEL</label>
+      <select class="api-input" id="modelSelect" onchange="toggleCustomModel()" style="flex:1;min-width:200px;">
+        <optgroup label="🏆 Top Recommended">
+          <option value="nvidia/nemotron-3-ultra-550b-a55b" selected>Nemotron-3-Ultra-550B ⭐</option>
+          <option value="deepseek-ai/deepseek-v4-pro">DeepSeek V4 Pro (1.6T)</option>
+          <option value="z-ai/glm-5.1">GLM-5.1 (754B)</option>
+          <option value="moonshotai/kimi-k2.6">Kimi-K2.6 (1T)</option>
+        </optgroup>
+        <optgroup label="⚡ Fast & Mid-Size">
+          <option value="deepseek-ai/deepseek-v4-flash">DeepSeek V4 Flash (284B)</option>
+          <option value="stepfun-ai/step-3.7-flash">Step 3.7 Flash (198B)</option>
+          <option value="nvidia/nemotron-3-super-120b-a12b">Nemotron-3-Super-120B</option>
+          <option value="nvidia/llama-3.3-nemotron-super-49b-v1.5">Nemotron-Super-49B v1.5</option>
+          <option value="mistralai/mistral-small-4-119b-2603">Mistral Small 4 (119B)</option>
+        </optgroup>
+        <optgroup label="💪 Reliable">
+          <option value="meta/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+          <option value="meta/llama-4-maverick-17b-128e-instruct">Llama 4 Maverick 17B</option>
+          <option value="google/gemma-4-31b-it">Gemma 4 31B</option>
+          <option value="mistralai/mistral-nemotron">Mistral Nemotron</option>
+          <option value="mistralai/mixtral-8x7b-instruct-v0.1">Mixtral 8x7B</option>
+          <option value="minimax/minimax-m2.7">MiniMax M2.7 (230B)</option>
+        </optgroup>
+        <optgroup label="🔬 Experimental / Small">
+          <option value="nvidia/nemotron-3-nano-30b-a3b">Nemotron-3-Nano-30B</option>
+          <option value="nvidia/gpt-oss-120b">GPT-OSS-120B</option>
+          <option value="nvidia/diffusiongemma-26b-a4b-it">DiffusionGemma 26B</option>
+          <option value="meta/llama-3.1-8b-instruct">Llama 3.1 8B</option>
+          <option value="nvidia/nemotron-mini-4b-instruct">Nemotron-Mini-4B</option>
+        </optgroup>
+        <optgroup label="Custom">
+          <option value="custom">Custom model ID...</option>
+        </optgroup>
+      </select>
+      <input type="text" class="api-input" id="customModel" placeholder="e.g. mistralai/mixtral-8x7b" style="display:none;flex:1;min-width:200px;">
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="form-card">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('business')">Business Info</button>
+      <button class="tab" onclick="switchTab('targeting')">Targeting</button>
+      <button class="tab" onclick="switchTab('output')">Output Options</button>
+    </div>
+
+    <!-- Business Tab -->
+    <div id="tab-business">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" id="bizName" placeholder="e.g. KamTech World" value="KamTech World">
+        </div>
+        <div class="form-group">
+          <label>Website URL</label>
+          <input type="text" id="bizUrl" placeholder="e.g. kamtechworld.com" value="kamtechworld.com">
+        </div>
+        <div class="form-group full">
+          <label>Products / Services</label>
+          <textarea id="bizProducts" placeholder="e.g. Industrial weighing scales, material handling equipment, packaging machines">Industrial weighing scales, material handling equipment (forklifts, pallet trucks), packaging machines (strapping, shrink wrap). Supplier in UAE targeting factories, warehouses, logistics companies.</textarea>
+        </div>
+        <div class="form-group">
+          <label>Industry / Niche</label>
+          <input type="text" id="bizIndustry" placeholder="e.g. B2B Industrial Equipment" value="B2B Industrial Equipment UAE">
+        </div>
+        <div class="form-group">
+          <label>Target Customer</label>
+          <input type="text" id="bizTarget" placeholder="e.g. Procurement managers, factory owners" value="Procurement managers, factory owners, warehouse heads">
+        </div>
+        <div class="form-group">
+          <label>Main USP</label>
+          <input type="text" id="bizUsp" placeholder="e.g. Premium quality, fast delivery" value="Trusted UAE supplier, premium industrial quality, fast delivery">
+        </div>
+        <div class="form-group">
+          <label>Top Competitors</label>
+          <input type="text" id="bizCompetitors" placeholder="e.g. Petra ME, HIRS Global" value="Petra ME, HIRS Global, Endel Weigh Systems">
+        </div>
+      </div>
+    </div>
+
+    <!-- Targeting Tab -->
+    <div id="tab-targeting" style="display:none">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Target Locations</label>
+          <input type="text" id="tgtLocations" placeholder="e.g. Dubai, Sharjah, Abu Dhabi" value="Dubai, Sharjah, Abu Dhabi, Ajman">
+        </div>
+        <div class="form-group">
+          <label>Campaign Language</label>
+          <select id="tgtLang">
+            <option value="English">English</option>
+            <option value="English + Arabic" selected>English + Arabic</option>
+            <option value="Arabic">Arabic</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Daily Budget (AED)</label>
+          <input type="number" id="tgtBudget" value="120" min="30" max="5000">
+        </div>
+        <div class="form-group">
+          <label>Goal</label>
+          <select id="tgtGoal">
+            <option value="Lead Generation" selected>Lead Generation</option>
+            <option value="Website Traffic">Website Traffic</option>
+            <option value="Phone Calls">Phone Calls</option>
+            <option value="WhatsApp Enquiries">WhatsApp Enquiries</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bidding Phase</label>
+          <select id="tgtBidding">
+            <option value="Max Clicks (new account)" selected>Max Clicks (new account)</option>
+            <option value="Target CPA">Target CPA</option>
+            <option value="Maximize Conversions">Maximize Conversions</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Target CPL (AED)</label>
+          <input type="number" id="tgtCpl" value="100" min="10">
+        </div>
+        <div class="form-group full">
+          <label>Ad Schedule</label>
+          <input type="text" id="tgtSchedule" value="Sunday–Thursday, 8am–6pm UAE time" placeholder="e.g. Mon-Fri 9am-6pm">
+        </div>
+      </div>
+    </div>
+
+    <!-- Output Tab -->
+    <div id="tab-output" style="display:none">
+      <div class="section-label">Select sections to generate</div>
+      <div class="output-toggles" id="outputToggles">
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="keywords" checked>
+          <span class="dot"></span> Keyword Research
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="campaign_structure" checked>
+          <span class="dot"></span> Campaign Structure
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="ad_copy" checked>
+          <span class="dot"></span> RSA Ad Copy
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="extensions" checked>
+          <span class="dot"></span> Ad Extensions
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="negatives" checked>
+          <span class="dot"></span> Negative Keywords
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="budget" checked>
+          <span class="dot"></span> Budget Allocation
+        </label>
+        <label class="toggle-chip checked" onclick="toggleChip(this)">
+          <input type="checkbox" value="settings" checked>
+          <span class="dot"></span> Campaign Settings
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <button class="generate-btn" id="genBtn" onclick="generate()">
+        <div class="btn-inner">
+          <span id="btnIcon">⚡</span>
+          <span id="btnText">Generate Campaign Plan</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="loader-dots"><span></span><span></span><span></span></div>
+    <p id="loaderMsg">Analysing business & generating campaign...</p>
+  </div>
+
+  <!-- Regen bar -->
+  <div class="regen-bar" id="regenBar">
+    <span>Campaign generated successfully</span>
+    <button class="regen-btn" onclick="generate()">Regenerate</button>
+  </div>
+
+  <!-- Output -->
+  <div class="output" id="output"></div>
+
+</div>
+
+<script>
+function switchTab(tab) {
+  ['business','targeting','output'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['business','targeting','output'][i]===tab);
+  });
+}
+
+function toggleChip(el) {
+  el.classList.toggle('checked');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+}
+
+function toggleCustomModel() {
+  const sel = document.getElementById('modelSelect').value;
+  document.getElementById('customModel').style.display = sel === 'custom' ? 'inline-block' : 'none';
+}
+function getModel() {
+  const sel = document.getElementById('modelSelect').value;
+  if (sel === 'custom') return document.getElementById('customModel').value.trim();
+  return sel;
+}
+function checkKey() {
+  const key = document.getElementById('apiKey').value.trim();
+  const badge = document.getElementById('keyBadge');
+  if (key.length > 10) {
+    badge.style.display = 'inline';
+    badge.className = 'api-badge ok';
+    badge.textContent = '✓ KEY SET';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function getCheckedOutputs() {
+  return [...document.querySelectorAll('#outputToggles input:checked')].map(cb => cb.value);
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = '⚠ ' + msg;
+  box.classList.add('visible');
+}
+function hideError() { document.getElementById('errorBox').classList.remove('visible'); }
+
+const loaderMsgs = [
+  'Analysing business & market...',
+  'Researching keyword opportunities...',
+  'Structuring campaign architecture...',
+  'Writing RSA headlines & descriptions...',
+  'Finalising budget & settings...'
+];
+let loaderInterval;
+function startLoader() {
+  let i = 0;
+  document.getElementById('loaderMsg').textContent = loaderMsgs[0];
+  loaderInterval = setInterval(() => {
+    i = (i + 1) % loaderMsgs.length;
+    document.getElementById('loaderMsg').textContent = loaderMsgs[i];
+  }, 2200);
+}
+function stopLoader() { clearInterval(loaderInterval); }
+
+async function generate() {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const baseUrl = (document.getElementById('apiBaseUrl').value.trim() || 'https://openrouter.ai/api/v1').replace(/\/$/, '');
+  const model = getModel();
+  if (!apiKey) { showError('Pehle API key daalo. NVIDIA Build se free key lo: build.nvidia.com/signup'); return; }
+  if (!model) { showError('Model select ya enter karo.'); return; }
+
+  const outputs = getCheckedOutputs();
+  if (!outputs.length) { showError('Kam se kam ek output section select karo.'); return; }
+
+  hideError();
+  document.getElementById('genBtn').disabled = true;
+  document.getElementById('btnText').textContent = 'Generating...';
+  document.getElementById('loader').classList.add('visible');
+  document.getElementById('output').classList.remove('visible');
+  document.getElementById('regenBar').classList.remove('visible');
+
+  startLoader();
+
+  const biz = {
+    name: document.getElementById('bizName').value,
+    url: document.getElementById('bizUrl').value,
+    products: document.getElementById('bizProducts').value,
+    industry: document.getElementById('bizIndustry').value,
+    target: document.getElementById('bizTarget').value,
+    usp: document.getElementById('bizUsp').value,
+    competitors: document.getElementById('bizCompetitors').value,
+  };
+  const tgt = {
+    locations: document.getElementById('tgtLocations').value,
+    lang: document.getElementById('tgtLang').value,
+    budget: document.getElementById('tgtBudget').value,
+    goal: document.getElementById('tgtGoal').value,
+    bidding: document.getElementById('tgtBidding').value,
+    cpl: document.getElementById('tgtCpl').value,
+    schedule: document.getElementById('tgtSchedule').value,
+  };
+
+  const prompt = `You are a senior Google Ads strategist. Generate a complete, actionable Google Search Ads campaign plan in JSON format.
+
+BUSINESS:
+- Name: ${biz.name}
+- Website: ${biz.url}
+- Products/Services: ${biz.products}
+- Industry: ${biz.industry}
+- Target Customer: ${biz.target}
+- USP: ${biz.usp}
+- Competitors: ${biz.competitors}
+
+CAMPAIGN SETTINGS:
+- Locations: ${tgt.locations}
+- Language: ${tgt.lang}
+- Daily Budget: AED ${tgt.budget}
+- Goal: ${tgt.goal}
+- Bidding: ${tgt.bidding}
+- Target CPL: AED ${tgt.cpl}
+- Ad Schedule: ${tgt.schedule}
+
+GENERATE THESE SECTIONS: ${outputs.join(', ')}
+
+Return ONLY a valid JSON object with this structure (include only requested sections):
+{
+  "summary": { "business": "string", "strategy": "string (2-3 sentences)", "total_budget_aed": number, "campaigns_count": number, "estimated_cpl": "string" },
+  "keywords": [{ "keyword": "string", "match_type": "Exact|Phrase|Broad", "group": "string", "priority": "P1|P2|P3", "intent": "High|Medium|Low" }],
+  "campaign_structure": [{ "campaign_name": "string", "budget_aed": number, "goal": "string", "ad_groups": [{ "name": "string", "keywords": ["string"], "match_types": ["string"] }] }],
+  "ad_copy": [{ "campaign": "string", "ad_group": "string", "display_url": "string", "headlines": [{ "text": "string", "chars": number }], "descriptions": [{ "text": "string", "chars": number }] }],
+  "extensions": { "sitelinks": [{ "title": "string", "desc": "string", "url": "string" }], "callouts": ["string"], "call": "string", "structured_snippets": { "header": "string", "values": ["string"] } },
+  "negatives": { "account_level": ["string"], "campaign_level": { "campaign_name": ["string"] } },
+  "budget": [{ "campaign": "string", "daily_aed": number, "monthly_aed": number, "share_pct": number, "rationale": "string" }],
+  "settings": { "network": "string", "devices": "string", "bid_strategy": "string", "bid_strategy_switch": "string", "conversion_actions": ["string"], "ad_rotation": "string", "frequency_cap": "string" }
+}
+
+Be specific, actionable, and tailored to this exact business. Generate at least 20 keywords. Include 3 ad copies minimum. All keywords in English relevant to UAE market. Make headlines max 30 chars each. Make descriptions max 90 chars each.`;
+
+  try {
+    const proxyUrl = window.location.origin + '/proxy';
+    const res = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Api-Key': apiKey
+      },
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API error ${res.status} — Check your key`);
+    }
+
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content || '';
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Invalid response format from API');
+    const plan = JSON.parse(jsonMatch[0]);
+
+    stopLoader();
+    document.getElementById('loader').classList.remove('visible');
+    renderOutput(plan, outputs, biz, tgt);
+
+  } catch (e) {
+    stopLoader();
+    document.getElementById('loader').classList.remove('visible');
+    showError(e.message);
+  } finally {
+    document.getElementById('genBtn').disabled = false;
+    document.getElementById('btnText').textContent = 'Generate Campaign Plan';
+    document.getElementById('btnIcon').textContent = '⚡';
+  }
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function renderOutput(plan, outputs, biz, tgt) {
+  const out = document.getElementById('output');
+  out.innerHTML = '';
+
+  // Summary banner
+  if (plan.summary) {
+    out.innerHTML += `
+    <div style="background:linear-gradient(135deg,rgba(79,110,247,0.1),rgba(124,58,237,0.1));border:1px solid rgba(79,110,247,0.3);border-radius:16px;padding:20px;margin-bottom:16px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:0.1em;margin-bottom:8px;">CAMPAIGN OVERVIEW</div>
+      <div style="font-family:var(--display);font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">${plan.summary.business || biz.name}</div>
+      <div style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:14px;">${plan.summary.strategy || ''}</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">DAILY BUDGET</div><div style="font-size:16px;font-weight:600;color:var(--accent)">AED ${plan.summary.total_budget_aed || tgt.budget}</div></div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">CAMPAIGNS</div><div style="font-size:16px;font-weight:600;color:var(--text)">${plan.summary.campaigns_count || (plan.campaign_structure||[]).length}</div></div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">TARGET CPL</div><div style="font-size:16px;font-weight:600;color:var(--green)">${plan.summary.estimated_cpl || 'AED '+tgt.cpl}</div></div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 14px;"><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">GOAL</div><div style="font-size:16px;font-weight:600;color:var(--text)">${tgt.goal}</div></div>
+      </div>
+    </div>`;
+  }
+
+  // Keywords
+  if (outputs.includes('keywords') && plan.keywords?.length) {
+    const kwText = plan.keywords.map(k => `[${k.match_type}] ${k.keyword} | ${k.group} | ${k.priority}`).join('\n');
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-blue">🔍</div>Keyword Research (${plan.keywords.length} keywords)</div>
+        <button class="copy-btn" onclick="copyText(\`${kwText.replace(/`/g,'\\`')}\`, this)">Copy</button>
+      </div>
+      <div class="output-body">
+        <table class="kw-table">
+          <tr><th>Keyword</th><th>Match</th><th>Group</th><th>Priority</th><th>Intent</th></tr>
+          ${plan.keywords.map(k => `
+          <tr>
+            <td class="kw-mono">${k.keyword}</td>
+            <td><span class="badge ${k.match_type==='Exact'?'b-exact':k.match_type==='Phrase'?'b-phrase':'b-broad'}">${k.match_type}</span></td>
+            <td style="color:var(--text2);font-size:12px">${k.group}</td>
+            <td><span class="badge ${k.priority==='P1'?'b-p1':k.priority==='P2'?'b-p2':'b-p3'}">${k.priority}</span></td>
+            <td style="color:var(--text2);font-size:12px">${k.intent}</td>
+          </tr>`).join('')}
+        </table>
+      </div>
+    </div>`;
+  }
+
+  // Campaign Structure
+  if (outputs.includes('campaign_structure') && plan.campaign_structure?.length) {
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-green">📊</div>Campaign Structure</div>
+      </div>
+      <div class="output-body">
+        ${plan.campaign_structure.map((c,ci) => `
+        <div class="camp-card">
+          <div class="camp-card-head">
+            <div>
+              <div class="camp-card-title">C${ci+1} · ${c.campaign_name}</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px">${c.goal||''}</div>
+            </div>
+            <span class="budget-tag">AED ${c.budget_aed}/day</span>
+          </div>
+          <div class="camp-card-body">
+            ${(c.ad_groups||[]).map((ag,agi) => `
+            <div class="ag-item">
+              <div class="ag-name">AD GROUP ${agi+1} · ${ag.name}</div>
+              <div class="kw-chips">
+                ${(ag.keywords||[]).map((kw,ki) => `<span class="kw-chip">${ag.match_types?.[ki]?`[${ag.match_types[ki]}] `:''}${kw}</span>`).join('')}
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Ad Copy
+  if (outputs.includes('ad_copy') && plan.ad_copy?.length) {
+    const allCopy = plan.ad_copy.map(a =>
+      `[${a.campaign} / ${a.ad_group}]\nDisplay URL: ${a.display_url}\nHeadlines:\n${(a.headlines||[]).map((h,i)=>`H${i+1}: ${h.text}`).join('\n')}\nDescriptions:\n${(a.descriptions||[]).map((d,i)=>`D${i+1}: ${d.text}`).join('\n')}`
+    ).join('\n\n---\n\n');
+
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-amber">✍️</div>RSA Ad Copy (${plan.ad_copy.length} ads)</div>
+        <button class="copy-btn" onclick="copyText(\`${allCopy.replace(/`/g,'\\`')}\`, this)">Copy All</button>
+      </div>
+      <div class="output-body">
+        ${plan.ad_copy.map(a => `
+        <div class="ad-preview">
+          <div class="ad-preview-label">${a.campaign} · ${a.ad_group}</div>
+          <div class="ad-url">https://${biz.url.replace('https://','')}</div>
+          <div style="margin-bottom:10px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px">HEADLINES (${(a.headlines||[]).length})</div>
+            <div class="ad-headlines-list">
+              ${(a.headlines||[]).map((h,i) => `
+              <div class="hl-item">
+                <span class="hl-num">H${i+1}</span>
+                <span class="hl-text">${h.text}</span>
+                <span class="hl-len ${(h.chars||h.text.length)>30?'warn':'ok'}">${h.chars||h.text.length}/30</span>
+              </div>`).join('')}
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px">DESCRIPTIONS (${(a.descriptions||[]).length})</div>
+            ${(a.descriptions||[]).map((d,i) => `
+            <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:4px">
+              <span class="hl-num">D${i+1}</span>
+              <span class="ad-desc">${d.text}</span>
+              <span class="hl-len ${(d.chars||d.text.length)>90?'warn':'ok'}" style="white-space:nowrap">${d.chars||d.text.length}/90</span>
+            </div>`).join('')}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Extensions
+  if (outputs.includes('extensions') && plan.extensions) {
+    const ext = plan.extensions;
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-purple">🔗</div>Ad Extensions</div>
+      </div>
+      <div class="output-body">
+        <div class="ext-grid">
+          ${ext.sitelinks?.length ? `
+          <div class="ext-item" style="grid-column:1/-1">
+            <div class="ext-type">SITELINKS</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${ext.sitelinks.map(sl => `
+              <div style="background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;min-width:140px">
+                <div style="font-size:13px;color:var(--accent)">${sl.title}</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">${sl.desc||''}</div>
+              </div>`).join('')}
+            </div>
+          </div>` : ''}
+          ${ext.callouts?.length ? `
+          <div class="ext-item">
+            <div class="ext-type">CALLOUTS</div>
+            <div class="ext-vals">${ext.callouts.map(c => `<div class="ext-val">• ${c}</div>`).join('')}</div>
+          </div>` : ''}
+          ${ext.call ? `
+          <div class="ext-item">
+            <div class="ext-type">CALL EXTENSION</div>
+            <div class="ext-val" style="color:var(--green)">${ext.call}</div>
+          </div>` : ''}
+          ${ext.structured_snippets ? `
+          <div class="ext-item" style="grid-column:1/-1">
+            <div class="ext-type">STRUCTURED SNIPPETS · ${ext.structured_snippets.header}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+              ${(ext.structured_snippets.values||[]).map(v => `<span class="kw-chip">${v}</span>`).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Negative Keywords
+  if (outputs.includes('negatives') && plan.negatives) {
+    const neg = plan.negatives;
+    const allNegs = [...(neg.account_level||[])].join(', ');
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-blue">🚫</div>Negative Keywords</div>
+        <button class="copy-btn" onclick="copyText('${allNegs}', this)">Copy</button>
+      </div>
+      <div class="output-body">
+        ${neg.account_level?.length ? `
+        <div style="margin-bottom:14px">
+          <div class="section-label" style="margin-bottom:8px">Account Level</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${neg.account_level.map(n => `<span class="badge b-neg">${n}</span>`).join('')}
+          </div>
+        </div>` : ''}
+        ${neg.campaign_level && Object.keys(neg.campaign_level).length ? `
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Campaign Level</div>
+          ${Object.entries(neg.campaign_level).map(([camp, negs]) => `
+          <div style="margin-bottom:10px">
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px">${camp}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">${(negs||[]).map(n=>`<span class="badge b-neg">${n}</span>`).join('')}</div>
+          </div>`).join('')}
+        </div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // Budget
+  if (outputs.includes('budget') && plan.budget?.length) {
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-green">💰</div>Budget Allocation</div>
+      </div>
+      <div class="output-body">
+        <table class="budget-table">
+          <tr><th>Campaign</th><th>Daily (AED)</th><th>Monthly (AED)</th><th>Share</th><th>Rationale</th></tr>
+          ${plan.budget.map(b => `
+          <tr>
+            <td style="color:var(--text)">${b.campaign}</td>
+            <td style="color:var(--accent);font-family:var(--mono)">${b.daily_aed}</td>
+            <td style="font-family:var(--mono)">${b.monthly_aed}</td>
+            <td><span class="badge b-phrase">${b.share_pct}%</span></td>
+            <td style="color:var(--text2);font-size:12px">${b.rationale}</td>
+          </tr>`).join('')}
+          <tr>
+            <td>Total</td>
+            <td style="font-family:var(--mono)">${plan.budget.reduce((s,b)=>s+b.daily_aed,0)}</td>
+            <td style="font-family:var(--mono)">${plan.budget.reduce((s,b)=>s+b.monthly_aed,0)}</td>
+            <td></td><td></td>
+          </tr>
+        </table>
+      </div>
+    </div>`;
+  }
+
+  // Settings
+  if (outputs.includes('settings') && plan.settings) {
+    const s = plan.settings;
+    const pairs = [
+      ['Network', s.network],['Devices', s.devices],['Bid Strategy', s.bid_strategy],
+      ['Strategy Switch', s.bid_strategy_switch],['Ad Rotation', s.ad_rotation],
+      ['Frequency Cap', s.frequency_cap],
+    ].filter(p=>p[1]);
+    out.innerHTML += `
+    <div class="output-section">
+      <div class="output-section-header">
+        <div class="output-section-title"><div class="section-icon si-purple">⚙️</div>Campaign Settings</div>
+      </div>
+      <div class="output-body">
+        <div class="settings-list">
+          ${pairs.map(([k,v]) => `
+          <div class="setting-item">
+            <span class="s-key">${k}</span>
+            <span class="s-val">${v}</span>
+          </div>`).join('')}
+        </div>
+        ${s.conversion_actions?.length ? `
+        <div style="margin-top:12px">
+          <div class="section-label" style="margin-bottom:8px">Conversion Actions</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${s.conversion_actions.map(c=>`<span class="kw-chip">${c}</span>`).join('')}
+          </div>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  out.classList.add('visible');
+  document.getElementById('regenBar').classList.add('visible');
+  out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# No external dependencies needed
+# Built-in: http.server, urllib, json, os

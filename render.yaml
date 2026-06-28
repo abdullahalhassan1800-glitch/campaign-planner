@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: campaign-planner
+    runtime: python
+    repo: https://github.com/abdullahalhassan1800-glitch/campaign-planner
+    plan: free
+    buildCommand: ""
+    startCommand: python backend/server.py
+    envVars:
+      - key: NVIDIA_API_KEY
+        sync: false
